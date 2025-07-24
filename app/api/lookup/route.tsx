@@ -41,9 +41,6 @@ export async function GET(request: Request) {
     if (pageSize) {
       apiUrl += `&page_size=${pageSize}`;
     }
-    console.log("------------------------------");
-    console.log(apiUrl);
-    console.log("------------------------------");
 
     // Make the request to the backend API
     const response = await fetch(apiUrl);
