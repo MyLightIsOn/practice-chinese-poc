@@ -8,7 +8,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   // If the env vars are not set, skip middleware check. You can remove this
-  // once you setup the project.
+  // once you set up the project.
   if (!hasEnvVars) {
     return supabaseResponse;
   }

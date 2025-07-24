@@ -53,7 +53,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
 
   const handleSearch = async (page: number = 1): Promise<void> => {
     if (!searchText.trim()) return;
@@ -64,12 +63,8 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `/api/lookup?text=${encodeURIComponent(searchText)}&page=${page}&page_size=${pageSize}`,
+        `/api/lookup?text=${encodeURIComponent(searchText)}&page=${page}&page_size=${20}`,
       );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
 
       const data = await response.json();
       setResults(data);
@@ -84,10 +79,12 @@ export default function Home() {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
-      // Reset to page 1 when performing a new search with Enter key
-      handleSearch(1);
+      // Reset to page 1 when performing a new search with Enter Key
+      handleSearch(1).then((r) => console.log(r));
     }
   };
+
+  console.log(results);
 
   return (
     <main className="min-h-screen flex flex-col items-center p-8">
@@ -124,7 +121,8 @@ export default function Home() {
             <div className="mb-4">
               <h2 className="text-xl font-bold">Results</h2>
               <p className="text-sm text-gray-500">
-                Input type: <span className="font-medium">{results.input_type}</span>
+                Input type:{" "}
+                <span className="font-medium">{results.input_type}</span>
               </p>
             </div>
 
@@ -138,19 +136,25 @@ export default function Home() {
                     className="flex flex-col gap-2 border-b border-gray-300 pb-4"
                   >
                     <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-bold">{entry.simplified}</span>
+                      <span className="text-2xl font-bold">
+                        {entry.simplified}
+                      </span>
                       {entry.traditional !== entry.simplified && (
-                        <span className="text-lg text-gray-600">({entry.traditional})</span>
+                        <span className="text-lg text-gray-600">
+                          ({entry.traditional})
+                        </span>
                       )}
                       <span className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                        {entry.match_type} - {(entry.relevance_score * 100).toFixed(0)}%
+                        {entry.match_type} -{" "}
+                        {(entry.relevance_score * 100).toFixed(0)}%
                       </span>
                     </div>
 
                     <div className="text-lg text-blue-700">{entry.pinyin}</div>
 
                     <div className="mt-1">
-                      <span className="font-medium">Definition:</span> {entry.definition}
+                      <span className="font-medium">Definition:</span>{" "}
+                      {entry.definition}
                     </div>
 
                     {entry.meanings && entry.meanings.length > 0 && (
@@ -167,25 +171,32 @@ export default function Home() {
                     <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2 text-sm">
                       {entry.hsk_level && (
                         <div>
-                          <span className="font-medium">HSK Level:</span> {entry.hsk_level.combined}
+                          <span className="font-medium">HSK Level:</span>{" "}
+                          {entry.hsk_level.combined}
                         </div>
                       )}
 
                       {entry.frequency_rank && (
                         <div>
-                          <span className="font-medium">Frequency Rank:</span> {entry.frequency_rank}
+                          <span className="font-medium">Frequency Rank:</span>{" "}
+                          {entry.frequency_rank}
                         </div>
                       )}
 
-                      {entry.parts_of_speech && entry.parts_of_speech.length > 0 && (
-                        <div>
-                          <span className="font-medium">Parts of Speech:</span> {entry.parts_of_speech.join(", ")}
-                        </div>
-                      )}
+                      {entry.parts_of_speech &&
+                        entry.parts_of_speech.length > 0 && (
+                          <div>
+                            <span className="font-medium">
+                              Parts of Speech:
+                            </span>{" "}
+                            {entry.parts_of_speech.join(", ")}
+                          </div>
+                        )}
 
                       {entry.radical && (
                         <div>
-                          <span className="font-medium">Radical:</span> {entry.radical}
+                          <span className="font-medium">Radical:</span>{" "}
+                          {entry.radical}
                         </div>
                       )}
                     </div>
