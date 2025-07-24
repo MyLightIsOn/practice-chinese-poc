@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { KeyboardEvent } from "react";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { LookupResponse } from "@/types/LookupResponse";
+import { Search } from "@/components/search";
 
 export default function Home() {
   const [searchText, setSearchText] = useState<string>("");
@@ -47,24 +46,13 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center p-8">
       <div className="w-full max-w-2xl flex flex-col gap-8">
-        <div className="flex gap-4 items-center">
-          <Label htmlFor="search-input">Search</Label>
-          <Input
-            id="search-input"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Enter text to search..."
-            className="flex-1"
-          />
-          <button
-            onClick={() => handleSearch(1)}
-            disabled={isLoading || !searchText.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
-          >
-            {isLoading ? "Searching..." : "Search"}
-          </button>
-        </div>
+        <Search
+          searchText={searchText}
+          setSearchText={setSearchText}
+          handleSearch={handleSearch}
+          isLoading={isLoading}
+          handleKeyDown={handleKeyDown}
+        />
 
         {error && (
           <div className="text-red-500 p-4 border border-red-300 rounded-md bg-red-50">
