@@ -4,48 +4,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { KeyboardEvent } from "react";
-
-// Define interfaces for the API response based on the updated API documentation
-interface HSKLevel {
-  combined: number;
-  old: number;
-  new: number;
-}
-
-interface Transcriptions {
-  zhuyin: string;
-  wadegiles: string;
-}
-
-interface DictionaryEntry {
-  id: number;
-  simplified: string;
-  traditional: string;
-  pinyin: string;
-  definition: string;
-  hsk_level: HSKLevel;
-  frequency_rank: number;
-  radical: string;
-  match_type: string;
-  relevance_score: number;
-  parts_of_speech: string[];
-  classifiers: string[];
-  transcriptions: Transcriptions;
-  meanings: string[];
-}
-
-interface Pagination {
-  page: number;
-  page_size: number;
-  total_count: number;
-  total_pages: number;
-}
-
-interface LookupResponse {
-  input_type: "chinese" | "pinyin" | "english";
-  results: DictionaryEntry[];
-  pagination: Pagination;
-}
+import { DictionaryEntry } from "@/types/DictionaryEntry";
+import { LookupResponse } from "@/types/LookupResponse";
 
 export default function Home() {
   const [searchText, setSearchText] = useState<string>("");
