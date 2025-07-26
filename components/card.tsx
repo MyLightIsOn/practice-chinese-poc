@@ -1,6 +1,7 @@
 "use client";
 
 import { DictionaryEntry } from "@/types/DictionaryEntry";
+import { SaveToDictionaryButton } from "./save-to-dictionary-button";
 
 interface CardProps {
   entry: DictionaryEntry;
@@ -16,14 +17,17 @@ export function Card({ entry, isSelected = false, onSelect }: CardProps) {
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold">{entry.simplified}</span>
-        {entry.traditional !== entry.simplified && (
-          <span className="text-lg text-gray-600">({entry.traditional})</span>
-        )}
-        <span className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-          {entry.match_type} - {(entry.relevance_score * 100).toFixed(0)}%
-        </span>
+      <div className="flex items-baseline gap-2 justify-between">
+        <div className="flex items-baseline gap-2">
+          <span className="text-2xl font-bold">{entry.simplified}</span>
+          {entry.traditional !== entry.simplified && (
+            <span className="text-lg text-gray-600">({entry.traditional})</span>
+          )}
+          <span className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+            {entry.match_type} - {(entry.relevance_score * 100).toFixed(0)}%
+          </span>
+        </div>
+        <SaveToDictionaryButton entry={entry} />
       </div>
 
       <div className="text-lg text-blue-700">{entry.pinyin}</div>

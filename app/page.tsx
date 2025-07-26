@@ -60,6 +60,14 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center p-8">
       <div className="w-full flex flex-col gap-8">
+        <div className="flex justify-between items-center">
+          <a
+            href="/dictionary"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            My Dictionary
+          </a>
+        </div>
         <Search
           searchText={searchText}
           setSearchText={setSearchText}

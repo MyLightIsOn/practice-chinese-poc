@@ -4,6 +4,7 @@ import { LookupResponse } from "@/types/LookupResponse";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Card } from "@/components/card";
 import { Pagination } from "@/components/pagination";
+import { SaveAllSelectedButton } from "@/components/save-all-selected-button";
 
 interface SearchResultsProps {
   results: LookupResponse | null;
@@ -36,12 +37,20 @@ export function SearchResults({
 
       {results && !isLoading && (
         <div className="border rounded-md p-4">
-          <div className="mb-4">
-            <h2 className="text-xl font-bold">Results</h2>
-            <p className="text-sm text-gray-500">
-              Input type:{" "}
-              <span className="font-medium">{results.input_type}</span>
-            </p>
+          <div className="mb-4 flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-bold">Results</h2>
+              <p className="text-sm text-gray-500">
+                Input type:{" "}
+                <span className="font-medium">{results.input_type}</span>
+              </p>
+            </div>
+            {selectedEntries.length > 0 && (
+              <SaveAllSelectedButton
+                selectedEntries={selectedEntries}
+                entries={results.results}
+              />
+            )}
           </div>
 
           {results.results.length === 0 ? (
