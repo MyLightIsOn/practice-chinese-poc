@@ -45,7 +45,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex flex-col items-center p-8">
-      <div className="w-full max-w-2xl flex flex-col gap-8">
+      <div className="w-full flex flex-col gap-8">
         <Search
           searchText={searchText}
           setSearchText={setSearchText}

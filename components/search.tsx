@@ -20,7 +20,7 @@ export function Search({
   handleKeyDown,
 }: SearchProps) {
   return (
-    <div className="flex gap-4 items-center">
+    <div className="flex gap-4 items-center max-w-2xl w-full mx-auto">
       <Label htmlFor="search-input">Search</Label>
       <Input
         id="search-input"
