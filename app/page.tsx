@@ -49,7 +49,7 @@ export default function Home() {
     setSelectedEntries((prevSelected) => {
       if (prevSelected.includes(entryId)) {
         // If already selected, remove it
-        return prevSelected.filter(id => id !== entryId);
+        return prevSelected.filter((id) => id !== entryId);
       } else {
         // If not selected, add it
         return [...prevSelected, entryId];
