@@ -11,6 +11,8 @@ interface SearchResultsProps {
   error: string;
   currentPage: number;
   handleSearch: (page: number) => Promise<void>;
+  selectedEntries: number[];
+  toggleEntrySelection: (entryId: number) => void;
 }
 
 export function SearchResults({
@@ -19,6 +21,8 @@ export function SearchResults({
   error,
   currentPage,
   handleSearch,
+  selectedEntries,
+  toggleEntrySelection,
 }: SearchResultsProps) {
   return (
     <>
@@ -45,7 +49,12 @@ export function SearchResults({
           ) : (
             <div className="space-y-6">
               {results.results.map((entry: DictionaryEntry) => (
-                <Card key={entry.id} entry={entry} />
+                <Card
+                  key={entry.id}
+                  entry={entry}
+                  isSelected={selectedEntries.includes(entry.id)}
+                  onSelect={() => toggleEntrySelection(entry.id)}
+                />
               ))}
             </div>
           )}

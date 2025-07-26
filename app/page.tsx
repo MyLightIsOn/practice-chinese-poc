@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { KeyboardEvent } from "react";
 import { LookupResponse } from "@/types/LookupResponse";
+import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Search } from "@/components/search";
 import { SearchResults } from "@/components/search-results";
 
@@ -12,6 +13,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
 
   const handleSearch = async (page: number = 1): Promise<void> => {
     if (!searchText.trim()) return;
@@ -43,6 +45,18 @@ export default function Home() {
     }
   };
 
+  const toggleEntrySelection = (entryId: number): void => {
+    setSelectedEntries((prevSelected) => {
+      if (prevSelected.includes(entryId)) {
+        // If already selected, remove it
+        return prevSelected.filter(id => id !== entryId);
+      } else {
+        // If not selected, add it
+        return [...prevSelected, entryId];
+      }
+    });
+  };
+
   return (
     <main className="min-h-screen flex flex-col items-center p-8">
       <div className="w-full flex flex-col gap-8">
@@ -60,6 +74,8 @@ export default function Home() {
           error={error}
           currentPage={currentPage}
           handleSearch={handleSearch}
+          selectedEntries={selectedEntries}
+          toggleEntrySelection={toggleEntrySelection}
         />
       </div>
     </main>

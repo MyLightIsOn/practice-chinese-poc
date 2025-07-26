@@ -4,33 +4,32 @@ import { DictionaryEntry } from "@/types/DictionaryEntry";
 
 interface CardProps {
   entry: DictionaryEntry;
+  isSelected?: boolean;
+  onSelect?: () => void;
 }
 
-export function Card({ entry }: CardProps) {
+export function Card({ entry, isSelected = false, onSelect }: CardProps) {
   return (
     <div
-      className="flex flex-col gap-2 border-b border-gray-300 pb-4 card"
+      className={`flex flex-col gap-2 border-b border-gray-300 pb-4 card cursor-pointer ${
+        isSelected ? "dark:bg-muted border border-blue-300 rounded-md p-2" : ""
+      }`}
+      onClick={onSelect}
     >
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-bold">
-          {entry.simplified}
-        </span>
+        <span className="text-2xl font-bold">{entry.simplified}</span>
         {entry.traditional !== entry.simplified && (
-          <span className="text-lg text-gray-600">
-            ({entry.traditional})
-          </span>
+          <span className="text-lg text-gray-600">({entry.traditional})</span>
         )}
         <span className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-          {entry.match_type} -{" "}
-          {(entry.relevance_score * 100).toFixed(0)}%
+          {entry.match_type} - {(entry.relevance_score * 100).toFixed(0)}%
         </span>
       </div>
 
       <div className="text-lg text-blue-700">{entry.pinyin}</div>
 
       <div className="mt-1">
-        <span className="font-medium">Definition:</span>{" "}
-        {entry.definition}
+        <span className="font-medium">Definition:</span> {entry.definition}
       </div>
 
       {entry.meanings && entry.meanings.length > 0 && (
@@ -59,20 +58,16 @@ export function Card({ entry }: CardProps) {
           </div>
         )}
 
-        {entry.parts_of_speech &&
-          entry.parts_of_speech.length > 0 && (
-            <div>
-              <span className="font-medium">
-                Parts of Speech:
-              </span>{" "}
-              {entry.parts_of_speech.join(", ")}
-            </div>
-          )}
+        {entry.parts_of_speech && entry.parts_of_speech.length > 0 && (
+          <div>
+            <span className="font-medium">Parts of Speech:</span>{" "}
+            {entry.parts_of_speech.join(", ")}
+          </div>
+        )}
 
         {entry.radical && (
           <div>
-            <span className="font-medium">Radical:</span>{" "}
-            {entry.radical}
+            <span className="font-medium">Radical:</span> {entry.radical}
           </div>
         )}
       </div>
