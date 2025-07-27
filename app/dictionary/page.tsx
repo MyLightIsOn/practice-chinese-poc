@@ -5,8 +5,19 @@ import { createClient } from "@/lib/supabase/client";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Card } from "@/components/card";
 
+// Define a type for the database entries
+interface VocabEntry {
+  id: string;
+  simplified: string;
+  traditional?: string;
+  pinyin?: string;
+  definition?: string;
+  user_id: string;
+  created_at: string;
+}
+
 export default function DictionaryPage() {
-  const [entries, setEntries] = useState<any[]>([]);
+  const [entries, setEntries] = useState<VocabEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
@@ -44,7 +55,7 @@ export default function DictionaryPage() {
   }, []);
 
   // Convert vocabulary entries to DictionaryEntry format
-  const formatEntries = (entries: any[]): DictionaryEntry[] => {
+  const formatEntries = (entries: VocabEntry[]): DictionaryEntry[] => {
     return entries.map(entry => ({
       id: parseInt(entry.id.replace(/-/g, ""), 16) % 100000, // Generate a numeric ID from UUID
       simplified: entry.simplified,
@@ -55,11 +66,11 @@ export default function DictionaryPage() {
       relevance_score: 1,
       parts_of_speech: [],
       classifiers: [],
-      transcriptions: { pinyin: entry.pinyin || "" },
+      transcriptions: { zhuyin: "", wadegiles: "" },
       meanings: [],
       frequency_rank: 0,
       radical: "",
-      hsk_level: { combined: "", old: 0, new_primary: 0, new_advanced: 0 }
+      hsk_level: { combined: 0, old: 0, new: 0 }
     }));
   };
 
