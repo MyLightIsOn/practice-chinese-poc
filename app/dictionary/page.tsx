@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Card } from "@/components/card";
+import { RemoveAllSelectedButton } from "@/components/remove-all-selected-button";
+import { CreateQuickQuizButton } from "@/components/create-quick-quiz-button";
 
 // Define a type for the database entries
 interface VocabEntry {
@@ -20,6 +22,31 @@ export default function DictionaryPage() {
   const [entries, setEntries] = useState<VocabEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
+
+  // Function to toggle selection of an entry
+  const toggleEntrySelection = (entryId: number) => {
+    if (entryId === -1) {
+      // Special case: clear all selections
+      setSelectedEntries([]);
+      return;
+    }
+
+    setSelectedEntries((prevSelected) => {
+      if (prevSelected.includes(entryId)) {
+        // If already selected, remove it
+        return prevSelected.filter((id) => id !== entryId);
+      } else {
+        // If not selected, add it
+        return [...prevSelected, entryId];
+      }
+    });
+  };
+
+  // Function to handle removing all selected entries
+  const handleRemoveAllSelected = () => {
+    toggleEntrySelection(-1); // Using -1 as a signal to clear all selections
+  };
 
   useEffect(() => {
     const fetchSavedWords = async () => {
@@ -96,9 +123,28 @@ export default function DictionaryPage() {
 
         {!isLoading && !error && entries.length > 0 && (
           <div className="border rounded-md p-4">
+            <div className="mb-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold">My Dictionary</h2>
+              {selectedEntries.length > 0 && (
+                <div className="flex">
+                  <RemoveAllSelectedButton
+                    selectedEntries={selectedEntries}
+                    onRemoveAll={handleRemoveAllSelected}
+                  />
+                  <CreateQuickQuizButton
+                    selectedEntries={selectedEntries}
+                  />
+                </div>
+              )}
+            </div>
             <div className="space-y-6">
               {formatEntries(entries).map((entry) => (
-                <Card key={entry.id} entry={entry} />
+                <Card
+                  key={entry.id}
+                  entry={entry}
+                  isSelected={selectedEntries.includes(entry.id)}
+                  onSelect={() => toggleEntrySelection(entry.id)}
+                />
               ))}
             </div>
           </div>
