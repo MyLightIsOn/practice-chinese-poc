@@ -1,19 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { KeyboardEvent } from "react";
 import { LookupResponse } from "@/types/LookupResponse";
-import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Search } from "@/components/search";
 import { SearchResults } from "@/components/search-results";
+import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [searchText, setSearchText] = useState<string>("");
   const [results, setResults] = useState<LookupResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getSession();
+      setUser(data?.session?.user || null);
+
+      // Set up auth state listener
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        (_event, session) => {
+          setUser(session?.user || null);
+        },
+      );
+
+      return () => {
+        authListener?.subscription.unsubscribe();
+      };
+    };
+
+    checkUser();
+  }, []);
 
   const handleSearch = async (page: number = 1): Promise<void> => {
     if (!searchText.trim()) return;
@@ -57,10 +83,26 @@ export default function Home() {
     });
   };
 
+  const handleLogout = async (): Promise<void> => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.refresh();
+  };
+
   return (
     <main className="min-h-screen flex flex-col items-center p-8">
       <div className="w-full flex flex-col gap-8">
         <div className="flex justify-between items-center">
+          {user ? (
+            <Button onClick={handleLogout} variant="default">
+              Logout
+            </Button>
+          ) : (
+            <Button asChild variant="default">
+              <Link href="/auth/login">Login</Link>
+            </Button>
+          )}
+
           <a
             href="/dictionary"
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
