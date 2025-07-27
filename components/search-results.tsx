@@ -5,6 +5,7 @@ import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Card } from "@/components/card";
 import { Pagination } from "@/components/pagination";
 import { SaveAllSelectedButton } from "@/components/save-all-selected-button";
+import { RemoveAllSelectedButton } from "@/components/remove-all-selected-button";
 
 interface SearchResultsProps {
   results: LookupResponse | null;
@@ -25,6 +26,10 @@ export function SearchResults({
   selectedEntries,
   toggleEntrySelection,
 }: SearchResultsProps) {
+  const handleRemoveAllSelected = () => {
+    // Clear all selected entries
+    toggleEntrySelection(-1); // Using -1 as a signal to clear all selections
+  };
   return (
     <>
       {error && (
@@ -46,10 +51,16 @@ export function SearchResults({
               </p>
             </div>
             {selectedEntries.length > 0 && (
-              <SaveAllSelectedButton
-                selectedEntries={selectedEntries}
-                entries={results.results}
-              />
+              <div className="flex">
+                <RemoveAllSelectedButton
+                  selectedEntries={selectedEntries}
+                  onRemoveAll={handleRemoveAllSelected}
+                />
+                <SaveAllSelectedButton
+                  selectedEntries={selectedEntries}
+                  entries={results.results}
+                />
+              </div>
             )}
           </div>
 

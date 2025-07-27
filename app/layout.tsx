@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
+import { DictionaryProvider } from "@/lib/context/DictionaryContext";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 const geistSans = localFont({
-  src: '../fonts/Geist/Geist-VariableFont_wght.ttf',
+  src: "../fonts/Geist/Geist-VariableFont_wght.ttf",
   variable: "--font-geist-sans",
   display: "swap",
 });
@@ -33,7 +34,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <DictionaryProvider>{children}</DictionaryProvider>
         </ThemeProvider>
       </body>
     </html>

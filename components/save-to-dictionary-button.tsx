@@ -10,6 +10,7 @@ import {
 import { useEffect } from "react";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useDictionary } from "@/lib/context/DictionaryContext";
 
 interface SaveToDictionaryButtonProps {
   entry: DictionaryEntry;
@@ -18,6 +19,7 @@ interface SaveToDictionaryButtonProps {
 export function SaveToDictionaryButton({ entry }: SaveToDictionaryButtonProps) {
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { incrementCount, decrementCount } = useDictionary();
 
   // Check if the word is already saved when the component mounts
   useEffect(() => {
@@ -41,6 +43,7 @@ export function SaveToDictionaryButton({ entry }: SaveToDictionaryButtonProps) {
 
         if (success) {
           setIsSaved(false);
+          decrementCount();
           toast.success("Word removed from your dictionary");
         } else {
           toast.error(error || "Failed to remove word");
@@ -50,6 +53,7 @@ export function SaveToDictionaryButton({ entry }: SaveToDictionaryButtonProps) {
         const { success, error } = await saveWordToDictionary(entry);
         if (success) {
           setIsSaved(true);
+          incrementCount();
           toast.success("Word saved to your dictionary");
         } else {
           toast.error(error || "Failed to save word");

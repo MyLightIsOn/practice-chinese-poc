@@ -5,14 +5,19 @@ import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { saveMultipleWordsToDictionary } from "@/lib/dictionary";
 import { BookmarkPlus } from "lucide-react";
 import { toast } from "sonner";
+import { useDictionary } from "@/lib/context/DictionaryContext";
 
 interface SaveAllSelectedButtonProps {
   selectedEntries: number[];
   entries: DictionaryEntry[];
 }
 
-export function SaveAllSelectedButton({ selectedEntries, entries }: SaveAllSelectedButtonProps) {
+export function SaveAllSelectedButton({
+  selectedEntries,
+  entries,
+}: SaveAllSelectedButtonProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { refreshCount } = useDictionary();
 
   // This check is redundant since we're already checking in the SearchResults component,
   // but keeping it as a safeguard
@@ -25,12 +30,18 @@ export function SaveAllSelectedButton({ selectedEntries, entries }: SaveAllSelec
 
     try {
       // Get the full entry objects for the selected IDs
-      const entriesToSave = entries.filter(entry => selectedEntries.includes(entry.id));
+      const entriesToSave = entries.filter((entry) =>
+        selectedEntries.includes(entry.id),
+      );
 
       // Save all selected entries
-      const { success, error, savedCount } = await saveMultipleWordsToDictionary(entriesToSave);
+      const { success, error, savedCount } =
+        await saveMultipleWordsToDictionary(entriesToSave);
 
       if (success) {
+        // Refresh the count instead of incrementing by savedCount
+        // because some words might already be saved
+        await refreshCount();
         toast.success(`${savedCount} words saved to your dictionary`);
       } else {
         toast.error(error || "Failed to save words");

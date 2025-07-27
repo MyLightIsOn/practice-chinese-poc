@@ -6,7 +6,7 @@ import { LookupResponse } from "@/types/LookupResponse";
 import { Search } from "@/components/search";
 import { SearchResults } from "@/components/search-results";
 import { createClient } from "@/lib/supabase/client";
-import { useDictionaryCount } from "@/lib/hooks/useDictionaryCount";
+import { useDictionary } from "@/lib/context/DictionaryContext";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,8 +20,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
   const [user, setUser] = useState<any>(null);
-  const { count: dictionaryCount, isLoading: isCountLoading } =
-    useDictionaryCount();
+  const { count: dictionaryCount } = useDictionary();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -76,6 +75,11 @@ export default function Home() {
 
   const toggleEntrySelection = (entryId: number): void => {
     setSelectedEntries((prevSelected) => {
+      // Special case: -1 is used as a signal to clear all selections
+      if (entryId === -1) {
+        return [];
+      }
+
       if (prevSelected.includes(entryId)) {
         // If already selected, remove it
         return prevSelected.filter((id) => id !== entryId);
