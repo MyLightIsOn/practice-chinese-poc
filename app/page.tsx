@@ -6,6 +6,7 @@ import { LookupResponse } from "@/types/LookupResponse";
 import { Search } from "@/components/search";
 import { SearchResults } from "@/components/search-results";
 import { createClient } from "@/lib/supabase/client";
+import { useDictionaryCount } from "@/lib/hooks/useDictionaryCount";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,8 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
   const [user, setUser] = useState<any>(null);
+  const { count: dictionaryCount, isLoading: isCountLoading } =
+    useDictionaryCount();
 
   useEffect(() => {
     const checkUser = async () => {
@@ -105,9 +108,14 @@ export default function Home() {
 
           <a
             href="/dictionary"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             My Dictionary
+            {user && dictionaryCount !== null && (
+              <span className="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center text-xs font-medium">
+                {dictionaryCount}
+              </span>
+            )}
           </a>
         </div>
         <Search
