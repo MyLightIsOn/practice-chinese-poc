@@ -1,30 +1,24 @@
-import { DictionaryEntry } from '@/types/DictionaryEntry';
-import { createClient } from '@/lib/supabase/client';
-
-type VocabEntry = {
-  user_id: string;
-  simplified: string;
-  traditional?: string;
-  pinyin?: string;
-  definition?: string;
-  notes?: string;
-  audio_url?: string;
-  image_url?: string;
-};
+import { DictionaryEntry } from "@/types/DictionaryEntry";
+import { VocabEntry } from "@/types/VocabEntry";
+import { createClient } from "@/lib/supabase/client";
 
 /**
  * Save a word to the user's dictionary
  */
-export async function saveWordToDictionary(entry: DictionaryEntry): Promise<{ success: boolean; error?: string }> {
+export async function saveWordToDictionary(
+  entry: DictionaryEntry,
+): Promise<{ success: boolean; error?: string }> {
   const supabase = createClient();
 
   // Get the current user
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     return {
       success: false,
-      error: 'You must be logged in to save words.'
+      error: "You must be logged in to save words.",
     };
   }
 
@@ -34,24 +28,25 @@ export async function saveWordToDictionary(entry: DictionaryEntry): Promise<{ su
     simplified: entry.simplified,
     traditional: entry.traditional,
     pinyin: entry.pinyin,
-    definition: entry.definition
+    definition: entry.definition,
+    entry_id: entry.entry_id,
   };
 
   // Insert the entry into the vocab_entry table
-  const { data, error } = await supabase
-    .from('vocab_entry')
+  const { error } = await supabase
+    .from("vocab_entry")
     .insert(vocabEntry)
-    .select('id');
+    .select("id");
 
   if (error) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 
   return {
-    success: true
+    success: true,
   };
 }
 
@@ -62,7 +57,9 @@ export async function isWordSaved(simplified: string): Promise<boolean> {
   const supabase = createClient();
 
   // Get the current user
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     return false;
@@ -70,14 +67,14 @@ export async function isWordSaved(simplified: string): Promise<boolean> {
 
   // Check if the word exists for this user
   const { data, error } = await supabase
-    .from('vocab_entry')
-    .select('id')
-    .eq('user_id', session.user.id)
-    .eq('simplified', simplified)
+    .from("vocab_entry")
+    .select("id")
+    .eq("user_id", session.user.id)
+    .eq("simplified", simplified)
     .maybeSingle();
 
   if (error) {
-    console.error('Error checking if word is saved:', error);
+    console.error("Error checking if word is saved:", error);
     return false;
   }
 
@@ -87,80 +84,89 @@ export async function isWordSaved(simplified: string): Promise<boolean> {
 /**
  * Remove a word from the user's dictionary
  */
-export async function removeWordFromDictionary(simplified: string): Promise<{ success: boolean; error?: string }> {
+export async function removeWordFromDictionary(
+  simplified: string,
+): Promise<{ success: boolean; error?: string }> {
   const supabase = createClient();
 
   // Get the current user
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     return {
       success: false,
-      error: 'You must be logged in to remove words.'
+      error: "You must be logged in to remove words.",
     };
   }
 
   // Delete the entry
   const { error } = await supabase
-    .from('vocab_entry')
+    .from("vocab_entry")
     .delete()
-    .eq('user_id', session.user.id)
-    .eq('simplified', simplified);
+    .eq("user_id", session.user.id)
+    .eq("simplified", simplified);
 
   if (error) {
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 
   return {
-    success: true
+    success: true,
   };
 }
 
 /**
  * Save multiple words to the user's dictionary
  */
-export async function saveMultipleWordsToDictionary(entries: DictionaryEntry[]): Promise<{ success: boolean; error?: string; savedCount: number }> {
+export async function saveMultipleWordsToDictionary(
+  entries: DictionaryEntry[],
+): Promise<{ success: boolean; error?: string; savedCount: number }> {
   const supabase = createClient();
 
   // Get the current user
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   if (!session) {
     return {
       success: false,
-      error: 'You must be logged in to save words.',
-      savedCount: 0
+      error: "You must be logged in to save words.",
+      savedCount: 0,
     };
   }
 
   // Prepare the entries data
-  const vocabEntries = entries.map(entry => ({
+  const vocabEntries = entries.map((entry) => ({
     user_id: session.user.id,
     simplified: entry.simplified,
     traditional: entry.traditional,
     pinyin: entry.pinyin,
-    definition: entry.definition
+    definition: entry.definition,
+    entry_id: entry.entry_id,
   }));
 
   // Insert the entries into the vocab_entry table
   const { data, error } = await supabase
-    .from('vocab_entry')
+    .from("vocab_entry")
     .insert(vocabEntries)
-    .select('id');
+    .select("id");
 
   if (error) {
     return {
       success: false,
       error: error.message,
-      savedCount: 0
+      savedCount: 0,
     };
   }
 
   return {
     success: true,
-    savedCount: data.length
+    savedCount: data.length,
   };
 }

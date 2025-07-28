@@ -31,7 +31,7 @@ export function SaveAllSelectedButton({
     try {
       // Get the full entry objects for the selected IDs
       const entriesToSave = entries.filter((entry) =>
-        selectedEntries.includes(entry.id),
+        selectedEntries.includes(entry.entry_id),
       );
 
       // Save all selected entries

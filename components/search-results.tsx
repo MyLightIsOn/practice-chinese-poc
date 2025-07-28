@@ -72,8 +72,8 @@ export function SearchResults({
                 <Card
                   key={entry.id}
                   entry={entry}
-                  isSelected={selectedEntries.includes(entry.id)}
-                  onSelect={() => toggleEntrySelection(entry.id)}
+                  isSelected={selectedEntries.includes(entry.entry_id)}
+                  onSelect={() => toggleEntrySelection(entry.entry_id)}
                 />
               ))}
             </div>
