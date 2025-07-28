@@ -72,11 +72,11 @@ export default function DictionaryPage() {
 
     fetchSavedWords();
   }, []);
-
   // Convert vocabulary entries to DictionaryEntry format
   const formatEntries = (entries: VocabEntry[]): DictionaryEntry[] => {
     return entries.map((entry) => ({
-      entry_id: entry.entry_id ?? -1, // Provide a default value when entry_id is undefined
+      id: entry.id,
+      entry_id: entry.entry_id,
       simplified: entry.simplified,
       traditional: entry.traditional || entry.simplified,
       pinyin: entry.pinyin || "",
@@ -134,7 +134,7 @@ export default function DictionaryPage() {
             <div className="space-y-6">
               {formatEntries(entries).map((entry) => (
                 <Card
-                  key={entry.entry_id}
+                  key={entry.id}
                   entry={entry}
                   isSelected={selectedEntries.includes(entry.entry_id)}
                   onSelect={() => toggleEntrySelection(entry.entry_id)}

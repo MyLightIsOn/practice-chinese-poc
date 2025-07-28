@@ -29,8 +29,10 @@ export async function saveWordToDictionary(
     traditional: entry.traditional,
     pinyin: entry.pinyin,
     definition: entry.definition,
-    entry_id: entry.entry_id,
+    entry_id: entry.id,
   };
+
+  console.log(entry);
 
   // Insert the entry into the vocab_entry table
   const { error } = await supabase
@@ -148,7 +150,7 @@ export async function saveMultipleWordsToDictionary(
     traditional: entry.traditional,
     pinyin: entry.pinyin,
     definition: entry.definition,
-    entry_id: entry.entry_id,
+    entry_id: entry.id,
   }));
 
   // Insert the entries into the vocab_entry table

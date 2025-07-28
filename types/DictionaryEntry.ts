@@ -2,7 +2,7 @@ import { HSKLevel } from "./HSKLevel";
 import { Transcriptions } from "./Transcriptions";
 
 export interface DictionaryEntry {
-  id?: string;
+  id: string;
   entry_id: number;
   simplified: string;
   traditional: string;
