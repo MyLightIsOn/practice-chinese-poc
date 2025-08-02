@@ -7,13 +7,13 @@ import { DictionaryEntry } from "@/types/DictionaryEntry";
 
 export default function QuizPage() {
   const searchParams = useSearchParams();
-  const entryIds = searchParams.get("entries")?.split(",").map(Number) || [];
 
   const [entries, setEntries] = useState<DictionaryEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
+    const entryIds = searchParams.get("entries")?.split(",").map(Number) || [];
     const fetchEntries = async () => {
       if (entryIds.length === 0) {
         setError("No entries selected for the quiz.");
@@ -52,6 +52,7 @@ export default function QuizPage() {
       } else {
         // Convert to DictionaryEntry format
         const formattedEntries = data.map((entry) => ({
+          id: entry.id,
           entry_id: parseInt(entry.id.replace(/-/g, ""), 16) % 100000, // Generate a numeric ID from UUID
           simplified: entry.simplified,
           traditional: entry.traditional || entry.simplified,
@@ -75,7 +76,7 @@ export default function QuizPage() {
     };
 
     fetchEntries();
-  }, [entryIds]);
+  }, [searchParams]);
 
   return (
     <main className="min-h-screen flex flex-col items-center p-8">
@@ -113,6 +114,7 @@ export default function QuizPage() {
             </div>
           </div>
         )}
+        <div>Add Select Components Here</div>
       </div>
     </main>
   );

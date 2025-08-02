@@ -1,0 +1,25 @@
+Exercise Name,Stimulus,Interaction Type,Description
+Fill in the Blank (Word),text,fill_blank,User types missing word (character or pinyin)
+Fill in the Blank (Sentence),text,fill_blank,User types missing part of a sentence
+Image Flash Card → Type,image,free_text,User types translation or description
+Image Flash Card → Describe Image,image,free_text,User writes a description of the image
+Image Flash Card → Pick Audio,image,audio_select,User selects matching audio for image
+Character Flash Card → Type,text,free_text,User types the character shown
+Description Flash Card → Pick Image,text,image_select,User matches description to image
+Chinese Char MCQ → Pick English,text,multiple_choice,"User sees Chinese character, selects English"
+English Char MCQ → Pick Chinese,text,multiple_choice,"User sees English, selects Chinese character"
+Chinese Sentence MCQ → Pick English,text,multiple_choice,User matches Chinese sentence to English
+English Sentence MCQ → Pick Chinese,text,multiple_choice,User matches English sentence to Chinese
+Audio Word → Pick English,audio,multiple_choice,"User hears Chinese, selects English meaning"
+Audio Word → Type Chinese,audio,free_text,User hears audio and types Chinese
+Audio Dialogue → Type Response,dialogue,free_text,User types response to audio dialogue
+Audio Dialogue → Record Response,dialogue,record_audio,User speaks a response to the dialogue
+Sentence Reordering,text,drag_drop,User rearranges words to form a correct sentence
+Grammar Pattern Highlighting,text,highlight,"User highlights grammar structures (e.g., 把)"
+Pair Matching,text,match_pairs,User matches synonyms or equivalents
+Reading with Questions,text,multiple_choice,Read a passage and answer comprehension questions
+Continue the Story,text,free_text,User writes to extend a provided story or sentence
+Error Correction,text,free_text,User identifies and corrects a grammar mistake
+Shadowing Practice,audio,record_audio,User mimics audio clip and gets feedback
+Describe a Scene (Speaking),image,record_audio,User describes an image aloud
+Simulated Roleplay,dialogue,record_audio,User records a role-based conversational reply
