@@ -26,7 +26,7 @@ This endpoint allows you to search for Chinese words based on the input text. Th
 |-----------|------|----------|---------|-------------|
 | text | string | Yes | - | The text to search for. Can be Chinese characters, Pinyin, or English. |
 | page | integer | No | 1 | Page number for pagination. Must be >= 1. |
-| page_size | integer | No | 20 | Number of results per page. Must be between 1 and 100. |
+| page_size | integer | No | 100 | Number of results per page. Must be between 1 and 100. |
 
 #### Input Detection
 
@@ -98,9 +98,9 @@ For single-word queries, wildcards are added (e.g., "word*") to improve matching
   ],
   "pagination": {
     "page": 1,
-    "page_size": 20,
+    "page_size": 100,
     "total_count": 42,
-    "total_pages": 3
+    "total_pages": 1
   }
 }
 ```
@@ -213,7 +213,7 @@ Response:
   ],
   "pagination": {
     "page": 1,
-    "page_size": 20,
+    "page_size": 100,
     "total_count": 1,
     "total_pages": 1
   }
@@ -258,7 +258,7 @@ Response:
   ],
   "pagination": {
     "page": 1,
-    "page_size": 20,
+    "page_size": 100,
     "total_count": 1,
     "total_pages": 1
   }
@@ -303,7 +303,7 @@ Response:
   ],
   "pagination": {
     "page": 1,
-    "page_size": 20,
+    "page_size": 100,
     "total_count": 1,
     "total_pages": 1
   }
@@ -352,6 +352,268 @@ Response:
     "total_count": 42,
     "total_pages": 5
   }
+}
+```
+
+## Exercise Generation
+
+```
+POST /generate-exercise
+```
+
+This endpoint generates language learning exercises based on selected vocabulary words. It supports different exercise types and character formats (traditional or simplified).
+
+### Request Format
+
+```json
+{
+  "words": [
+    {
+      "word": "你好",
+      "exercise_type": "fill in the blank",
+      "type": "simplified"
+    },
+    {
+      "word": "谢谢",
+      "exercise_type": "fill in the blank",
+      "type": "simplified"
+    }
+  ]
+}
+```
+
+#### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| words | array | Yes | Array of word objects |
+| word.word | string | Yes | The Chinese word to include in the exercise |
+| word.exercise_type | string | Yes | Type of exercise: "fill in the blank" or "multiple choice" |
+| word.type | string | Yes | Character set to use: "traditional" or "simplified" |
+
+### Response Format
+
+```json
+{
+  "exercise_type": "fill_in_blank",
+  "questions": [
+    {
+      "text": "我想和你说_____。"
+    },
+    {
+      "text": "_____你帮助我。"
+    }
+  ],
+  "answers": [
+    "你好",
+    "谢谢"
+  ]
+}
+```
+
+For multiple choice exercises, the response will include options:
+
+```json
+{
+  "exercise_type": "multiple_choice",
+  "questions": [
+    {
+      "text": "How do you say 'hello' in Chinese?",
+      "options": ["你好", "再见", "谢谢", "对不起"]
+    },
+    {
+      "text": "Which word means 'thank you'?",
+      "options": ["早上好", "谢谢", "晚安", "你好"]
+    }
+  ],
+  "answers": [0, 1]
+}
+```
+
+### Example
+
+Request:
+```
+POST /generate-exercise
+Content-Type: application/json
+
+{
+  "words": [
+    {
+      "word": "你好",
+      "exercise_type": "multiple choice",
+      "type": "traditional"
+    },
+    {
+      "word": "謝謝",
+      "exercise_type": "multiple choice",
+      "type": "traditional"
+    }
+  ]
+}
+```
+
+Response:
+```json
+{
+  "exercise_type": "multiple_choice",
+  "questions": [
+    {
+      "text": "Which phrase would you use when meeting someone for the first time?",
+      "options": ["你好", "再見", "晚安", "謝謝"]
+    },
+    {
+      "text": "After someone helps you, what should you say?",
+      "options": ["對不起", "你好", "謝謝", "不客氣"]
+    }
+  ],
+  "answers": [0, 2]
+}
+```
+
+## User Dictionary API
+
+The User Dictionary API allows users to manage their personal vocabulary list.
+
+### Get User Dictionary Entries
+
+```
+GET /api/user-dictionary
+```
+
+Retrieves all entries in the user's dictionary.
+
+#### Authentication
+
+This endpoint requires authentication. The user must be logged in.
+
+#### Response Format
+
+```json
+{
+  "entries": [
+    {
+      "id": 123,
+      "user_id": "user-uuid",
+      "simplified": "你好",
+      "traditional": "你好",
+      "pinyin": "ni3 hao3",
+      "definition": "hello",
+      "notes": "Common greeting",
+      "created_at": "2025-08-03T09:30:00Z"
+    }
+  ]
+}
+```
+
+### Check if Word is Saved
+
+```
+GET /api/user-dictionary?simplified=你好
+```
+
+Checks if a specific word is saved in the user's dictionary.
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| simplified | string | Yes | The simplified Chinese characters to check |
+
+#### Response Format
+
+```json
+{
+  "saved": true
+}
+```
+
+### Save Word to Dictionary
+
+```
+POST /api/user-dictionary
+```
+
+Saves a word to the user's dictionary.
+
+#### Request Body
+
+```json
+{
+  "simplified": "你好",
+  "traditional": "你好",
+  "pinyin": "ni3 hao3",
+  "definition": "hello",
+  "notes": "Common greeting"
+}
+```
+
+#### Response Format
+
+```json
+{
+  "success": true,
+  "id": 123
+}
+```
+
+### Save Multiple Words to Dictionary
+
+```
+POST /api/user-dictionary
+```
+
+Saves multiple words to the user's dictionary in a single request.
+
+#### Request Body
+
+```json
+{
+  "entries": [
+    {
+      "simplified": "你好",
+      "traditional": "你好",
+      "pinyin": "ni3 hao3",
+      "definition": "hello"
+    },
+    {
+      "simplified": "谢谢",
+      "traditional": "謝謝",
+      "pinyin": "xie4 xie4",
+      "definition": "thank you"
+    }
+  ]
+}
+```
+
+#### Response Format
+
+```json
+{
+  "success": true,
+  "savedCount": 2
+}
+```
+
+### Remove Word from Dictionary
+
+```
+DELETE /api/user-dictionary?simplified=你好
+```
+
+Removes a word from the user's dictionary.
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| simplified | string | Yes | The simplified Chinese characters to remove |
+
+#### Response Format
+
+```json
+{
+  "success": true
 }
 ```
 
