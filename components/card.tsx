@@ -1,7 +1,7 @@
 "use client";
 
 import { DictionaryEntry } from "@/types/DictionaryEntry";
-import { SaveToDictionaryButton } from "./save-to-dictionary-button/save-to-dictionary-button";
+import { Index } from "./save-to-dictionary-button";
 
 interface CardProps {
   entry: DictionaryEntry;
@@ -27,7 +27,7 @@ export function Card({ entry, isSelected = false, onSelect }: CardProps) {
             {entry.match_type} - {(entry.relevance_score * 100).toFixed(0)}%
           </span>
         </div>
-        <SaveToDictionaryButton entry={entry} />
+        <Index entry={entry} />
       </div>
 
       <div className="text-lg text-blue-700">{entry.pinyin}</div>

@@ -1,8 +1,9 @@
-import { HSKLevel } from './HSKLevel';
-import { Transcriptions } from './Transcriptions';
+import { HSKLevel } from "./HSKLevel";
+import { Transcriptions } from "./Transcriptions";
 
 export interface DictionaryEntry {
-  id: number;
+  id: string;
+  entry_id: number;
   simplified: string;
   traditional: string;
   pinyin: string;

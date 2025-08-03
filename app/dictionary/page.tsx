@@ -3,20 +3,10 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
+import { VocabEntry } from "@/types/VocabEntry";
 import { Card } from "@/components/card";
 import { RemoveAllSelectedButton } from "@/components/remove-all-selected-button";
-import { CreateQuickQuizButton } from "@/components/create-quick-quiz-button";
-
-// Define a type for the database entries
-interface VocabEntry {
-  id: string;
-  simplified: string;
-  traditional?: string;
-  pinyin?: string;
-  definition?: string;
-  user_id: string;
-  created_at: string;
-}
+import { Index } from "@/components/create-quick-quiz-button";
 
 export default function DictionaryPage() {
   const [entries, setEntries] = useState<VocabEntry[]>([]);
@@ -53,7 +43,9 @@ export default function DictionaryPage() {
       const supabase = createClient();
 
       // Get the current user
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         setError("You must be logged in to view your dictionary.");
@@ -63,13 +55,13 @@ export default function DictionaryPage() {
 
       // Fetch the user's saved words
       const { data, error } = await supabase
-        .from('vocab_entry')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false });
+        .from("vocab_entry")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false });
 
       if (error) {
-        console.error('Error fetching saved words:', error);
+        console.error("Error fetching saved words:", error);
         setError("Failed to load your dictionary. Please try again.");
       } else {
         setEntries(data || []);
@@ -80,11 +72,11 @@ export default function DictionaryPage() {
 
     fetchSavedWords();
   }, []);
-
   // Convert vocabulary entries to DictionaryEntry format
   const formatEntries = (entries: VocabEntry[]): DictionaryEntry[] => {
-    return entries.map(entry => ({
-      id: parseInt(entry.id.replace(/-/g, ""), 16) % 100000, // Generate a numeric ID from UUID
+    return entries.map((entry) => ({
+      id: entry.id,
+      entry_id: entry.entry_id,
       simplified: entry.simplified,
       traditional: entry.traditional || entry.simplified,
       pinyin: entry.pinyin || "",
@@ -97,7 +89,7 @@ export default function DictionaryPage() {
       meanings: [],
       frequency_rank: 0,
       radical: "",
-      hsk_level: { combined: 0, old: 0, new: 0 }
+      hsk_level: { combined: 0, old: 0, new: 0 },
     }));
   };
 
@@ -106,7 +98,9 @@ export default function DictionaryPage() {
       <div className="w-full max-w-4xl">
         <h1 className="text-3xl font-bold mb-6">My Dictionary</h1>
 
-        {isLoading && <div className="text-center p-4">Loading your dictionary...</div>}
+        {isLoading && (
+          <div className="text-center p-4">Loading your dictionary...</div>
+        )}
 
         {error && (
           <div className="text-red-500 p-4 border border-red-300 rounded-md bg-red-50">
@@ -117,7 +111,9 @@ export default function DictionaryPage() {
         {!isLoading && !error && entries.length === 0 && (
           <div className="text-center p-8 border rounded-md">
             <p className="text-gray-600">Your dictionary is empty.</p>
-            <p className="mt-2">Search for words and save them to see them here.</p>
+            <p className="mt-2">
+              Search for words and save them to see them here.
+            </p>
           </div>
         )}
 
@@ -131,9 +127,7 @@ export default function DictionaryPage() {
                     selectedEntries={selectedEntries}
                     onRemoveAll={handleRemoveAllSelected}
                   />
-                  <CreateQuickQuizButton
-                    selectedEntries={selectedEntries}
-                  />
+                  <Index selectedEntries={selectedEntries} />
                 </div>
               )}
             </div>
@@ -142,8 +136,8 @@ export default function DictionaryPage() {
                 <Card
                   key={entry.id}
                   entry={entry}
-                  isSelected={selectedEntries.includes(entry.id)}
-                  onSelect={() => toggleEntrySelection(entry.id)}
+                  isSelected={selectedEntries.includes(entry.entry_id)}
+                  onSelect={() => toggleEntrySelection(entry.entry_id)}
                 />
               ))}
             </div>

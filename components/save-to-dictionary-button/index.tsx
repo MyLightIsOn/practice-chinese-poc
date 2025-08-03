@@ -12,7 +12,7 @@ interface SaveToDictionaryButtonProps {
   entry: DictionaryEntry;
 }
 
-export function SaveToDictionaryButton({ entry }: SaveToDictionaryButtonProps) {
+export function Index({ entry }: SaveToDictionaryButtonProps) {
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { incrementCount, decrementCount } = useDictionary();

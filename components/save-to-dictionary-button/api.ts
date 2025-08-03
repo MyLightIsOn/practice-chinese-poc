@@ -6,22 +6,23 @@ import { DictionaryEntry } from "@/types/DictionaryEntry";
  * @returns Object containing success status and error message if applicable
  */
 export async function addWordToDictionary(entry: DictionaryEntry) {
-  const response = await fetch('/api/user-dictionary', {
-    method: 'POST',
+  const response = await fetch("/api/user-dictionary", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       simplified: entry.simplified,
       traditional: entry.traditional,
       pinyin: entry.pinyin,
       definition: entry.definition,
+      entry_id: entry.id,
     }),
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'Failed to save word');
+    throw new Error(errorData.error || "Failed to save word");
   }
 
   return await response.json();
@@ -33,13 +34,16 @@ export async function addWordToDictionary(entry: DictionaryEntry) {
  * @returns Object containing success status and error message if applicable
  */
 export async function removeWordFromDictionary(simplified: string) {
-  const response = await fetch(`/api/user-dictionary?simplified=${encodeURIComponent(simplified)}`, {
-    method: 'DELETE',
-  });
+  const response = await fetch(
+    `/api/user-dictionary?simplified=${encodeURIComponent(simplified)}`,
+    {
+      method: "DELETE",
+    },
+  );
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'Failed to remove word');
+    throw new Error(errorData.error || "Failed to remove word");
   }
 
   return await response.json();
@@ -51,10 +55,12 @@ export async function removeWordFromDictionary(simplified: string) {
  * @returns Boolean indicating if the word is saved
  */
 export async function checkIfWordSaved(simplified: string) {
-  const response = await fetch(`/api/user-dictionary?simplified=${encodeURIComponent(simplified)}`);
+  const response = await fetch(
+    `/api/user-dictionary?simplified=${encodeURIComponent(simplified)}`,
+  );
 
   if (!response.ok) {
-    throw new Error('Failed to check if word is saved');
+    throw new Error("Failed to check if word is saved");
   }
 
   const data = await response.json();
@@ -67,18 +73,21 @@ export async function checkIfWordSaved(simplified: string) {
  * @param isSaved Current saved status
  * @returns Object containing success status, new saved status, and error message if applicable
  */
-export async function toggleWordInDictionary(entry: DictionaryEntry, isSaved: boolean) {
+export async function toggleWordInDictionary(
+  entry: DictionaryEntry,
+  isSaved: boolean,
+) {
   if (isSaved) {
     const result = await removeWordFromDictionary(entry.simplified);
     return {
       ...result,
-      isSaved: false
+      isSaved: false,
     };
   } else {
     const result = await addWordToDictionary(entry);
     return {
       ...result,
-      isSaved: true
+      isSaved: true,
     };
   }
 }

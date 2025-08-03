@@ -4,7 +4,7 @@ import { LookupResponse } from "@/types/LookupResponse";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Card } from "@/components/card";
 import { Pagination } from "@/components/pagination";
-import { SaveAllSelectedButton } from "@/components/save-all-selected-button/save-all-selected-button";
+import { Index } from "@/components/save-all-selected-button";
 import { RemoveAllSelectedButton } from "@/components/remove-all-selected-button";
 
 interface SearchResultsProps {
@@ -56,7 +56,7 @@ export function SearchResults({
                   selectedEntries={selectedEntries}
                   onRemoveAll={handleRemoveAllSelected}
                 />
-                <SaveAllSelectedButton
+                <Index
                   selectedEntries={selectedEntries}
                   entries={results.results}
                 />
@@ -72,8 +72,8 @@ export function SearchResults({
                 <Card
                   key={entry.id}
                   entry={entry}
-                  isSelected={selectedEntries.includes(entry.id)}
-                  onSelect={() => toggleEntrySelection(entry.id)}
+                  isSelected={selectedEntries.includes(entry.entry_id)}
+                  onSelect={() => toggleEntrySelection(entry.entry_id)}
                 />
               ))}
             </div>

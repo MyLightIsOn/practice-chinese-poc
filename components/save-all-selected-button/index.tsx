@@ -12,7 +12,7 @@ interface SaveAllSelectedButtonProps {
   entries: DictionaryEntry[];
 }
 
-export function SaveAllSelectedButton({
+export function Index({
   selectedEntries,
   entries,
 }: SaveAllSelectedButtonProps) {
@@ -47,7 +47,11 @@ export function SaveAllSelectedButton({
       }
     } catch (err) {
       console.error("Error saving words:", err);
-      toast.error(err instanceof Error ? err.message : "An error occurred. Please try again.");
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An error occurred. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
