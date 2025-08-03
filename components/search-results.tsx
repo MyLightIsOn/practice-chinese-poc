@@ -4,7 +4,7 @@ import { LookupResponse } from "@/types/LookupResponse";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
 import { Card } from "@/components/card";
 import { Pagination } from "@/components/pagination";
-import { SaveAllSelectedButton } from "@/components/save-all-selected-button";
+import { SaveAllSelectedButton } from "@/components/save-all-selected-button/save-all-selected-button";
 import { RemoveAllSelectedButton } from "@/components/remove-all-selected-button";
 
 interface SearchResultsProps {

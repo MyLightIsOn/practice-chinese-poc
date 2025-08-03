@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
-import { saveMultipleWordsToDictionary } from "@/lib/dictionary";
 import { BookmarkPlus } from "lucide-react";
 import { toast } from "sonner";
 import { useDictionary } from "@/lib/context/DictionaryContext";
+import { saveMultipleWordsToDictionary } from "./api";
 
 interface SaveAllSelectedButtonProps {
   selectedEntries: number[];
@@ -34,21 +34,20 @@ export function SaveAllSelectedButton({
         selectedEntries.includes(entry.id),
       );
 
-      // Save all selected entries
-      const { success, error, savedCount } =
-        await saveMultipleWordsToDictionary(entriesToSave);
+      // Save all selected entries using the API function
+      const data = await saveMultipleWordsToDictionary(entriesToSave);
 
-      if (success) {
+      if (data.success) {
         // Refresh the count instead of incrementing by savedCount
         // because some words might already be saved
         await refreshCount();
-        toast.success(`${savedCount} words saved to your dictionary`);
+        toast.success(`${data.savedCount} words saved to your dictionary`);
       } else {
-        toast.error(error || "Failed to save words");
+        toast.error(data.error || "Failed to save words");
       }
     } catch (err) {
       console.error("Error saving words:", err);
-      toast.error("An error occurred. Please try again.");
+      toast.error(err instanceof Error ? err.message : "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }

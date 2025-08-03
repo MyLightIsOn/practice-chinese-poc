@@ -1,7 +1,7 @@
 "use client";
 
 import { DictionaryEntry } from "@/types/DictionaryEntry";
-import { SaveToDictionaryButton } from "./save-to-dictionary-button";
+import { SaveToDictionaryButton } from "./save-to-dictionary-button/save-to-dictionary-button";
 
 interface CardProps {
   entry: DictionaryEntry;

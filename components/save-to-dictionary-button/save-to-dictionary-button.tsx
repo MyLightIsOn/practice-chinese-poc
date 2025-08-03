@@ -2,15 +2,11 @@
 
 import { useState } from "react";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
-import {
-  saveWordToDictionary,
-  removeWordFromDictionary,
-  isWordSaved,
-} from "@/lib/dictionary";
 import { useEffect } from "react";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
 import { useDictionary } from "@/lib/context/DictionaryContext";
+import { checkIfWordSaved, toggleWordInDictionary } from "./api";
 
 interface SaveToDictionaryButtonProps {
   entry: DictionaryEntry;
@@ -24,8 +20,13 @@ export function SaveToDictionaryButton({ entry }: SaveToDictionaryButtonProps) {
   // Check if the word is already saved when the component mounts
   useEffect(() => {
     const checkIfSaved = async () => {
-      const saved = await isWordSaved(entry.simplified);
-      setIsSaved(saved);
+      try {
+        const saved = await checkIfWordSaved(entry.simplified);
+        setIsSaved(saved);
+      } catch (err) {
+        console.error("Error checking if word is saved:", err);
+        setIsSaved(false);
+      }
     };
 
     checkIfSaved();
@@ -35,33 +36,28 @@ export function SaveToDictionaryButton({ entry }: SaveToDictionaryButtonProps) {
     setIsLoading(true);
 
     try {
-      if (isSaved) {
-        // Remove from dictionary
-        const { success, error } = await removeWordFromDictionary(
-          entry.simplified,
-        );
+      const result = await toggleWordInDictionary(entry, isSaved);
 
-        if (success) {
-          setIsSaved(false);
-          decrementCount();
-          toast.success("Word removed from your dictionary");
-        } else {
-          toast.error(error || "Failed to remove word");
-        }
-      } else {
-        // Add to dictionary
-        const { success, error } = await saveWordToDictionary(entry);
-        if (success) {
-          setIsSaved(true);
+      if (result.success) {
+        setIsSaved(result.isSaved);
+
+        if (result.isSaved) {
           incrementCount();
           toast.success("Word saved to your dictionary");
         } else {
-          toast.error(error || "Failed to save word");
+          decrementCount();
+          toast.success("Word removed from your dictionary");
         }
+      } else {
+        toast.error(result.error || "Failed to update dictionary");
       }
     } catch (err) {
       console.error("Error toggling word save:", err);
-      toast.error("An error occurred. Please try again.");
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "An error occurred. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
