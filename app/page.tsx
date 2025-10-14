@@ -7,9 +7,9 @@ import { Search } from "@/components/search";
 import { SearchResults } from "@/components/search-results";
 import { createClient } from "@/lib/supabase/client";
 import { useDictionary } from "@/lib/context/DictionaryContext";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import Header from "@/components/header";
 import { useRouter } from "next/navigation";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 export default function Home() {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function Home() {
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const { count: dictionaryCount } = useDictionary();
 
   useEffect(() => {
@@ -97,31 +97,14 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center p-8">
+    <main className="min-h-screen flex flex-col items-center px-8 py-4">
       <div className="w-full flex flex-col gap-8">
-        <div className="flex justify-between items-center">
-          {user ? (
-            <Button onClick={handleLogout} variant="default">
-              Logout
-            </Button>
-          ) : (
-            <Button asChild variant="default">
-              <Link href="/auth/login">Login</Link>
-            </Button>
-          )}
+        <Header
+          user={user}
+          dictionaryCount={dictionaryCount}
+          handleLogout={handleLogout}
+        />
 
-          <a
-            href="/dictionary"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
-          >
-            My Dictionary
-            {user && dictionaryCount !== null && (
-              <span className="bg-white text-blue-600 rounded-full h-6 w-6 flex items-center justify-center text-xs font-medium">
-                {dictionaryCount}
-              </span>
-            )}
-          </a>
-        </div>
         <Search
           searchText={searchText}
           setSearchText={setSearchText}
