@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { DictionaryEntry } from "@/types/DictionaryEntry";
 
-export default function QuizPage() {
+function QuizPageContent() {
   const searchParams = useSearchParams();
 
   const [entries, setEntries] = useState<DictionaryEntry[]>([]);
@@ -117,5 +117,14 @@ export default function QuizPage() {
         <div>Add Select Components Here</div>
       </div>
     </main>
+  );
+}
+
+
+export default function QuizPage() {
+  return (
+    <Suspense fallback={<div className="text-center p-4">Loading...</div>}>
+      <QuizPageContent />
+    </Suspense>
   );
 }

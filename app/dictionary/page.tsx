@@ -12,15 +12,10 @@ export default function DictionaryPage() {
   const [entries, setEntries] = useState<VocabEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-  const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
+  const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
 
   // Function to toggle selection of an entry
-  const toggleEntrySelection = (entryId: number) => {
-    if (entryId === -1) {
-      // Special case: clear all selections
-      setSelectedEntries([]);
-      return;
-    }
+  const toggleEntrySelection = (entryId: string) => {
 
     setSelectedEntries((prevSelected) => {
       if (prevSelected.includes(entryId)) {
@@ -35,7 +30,8 @@ export default function DictionaryPage() {
 
   // Function to handle removing all selected entries
   const handleRemoveAllSelected = () => {
-    toggleEntrySelection(-1); // Using -1 as a signal to clear all selections
+    // Clear all selections directly
+    setSelectedEntries([]);
   };
 
   useEffect(() => {
