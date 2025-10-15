@@ -7,4 +7,5 @@ export interface VocabEntry {
   definition?: string;
   user_id: string;
   created_at: string;
+  entry_id: string;
 }

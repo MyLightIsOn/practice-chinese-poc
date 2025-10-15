@@ -18,7 +18,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [selectedEntries, setSelectedEntries] = useState<number[]>([]);
+  const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const { count: dictionaryCount } = useDictionary();
 
@@ -73,13 +73,8 @@ export default function Home() {
     }
   };
 
-  const toggleEntrySelection = (entryId: number): void => {
+  const toggleEntrySelection = (entryId: string): void => {
     setSelectedEntries((prevSelected) => {
-      // Special case: -1 is used as a signal to clear all selections
-      if (entryId === -1) {
-        return [];
-      }
-
       if (prevSelected.includes(entryId)) {
         // If already selected, remove it
         return prevSelected.filter((id) => id !== entryId);
@@ -121,6 +116,7 @@ export default function Home() {
           handleSearch={handleSearch}
           selectedEntries={selectedEntries}
           toggleEntrySelection={toggleEntrySelection}
+          onClearSelections={() => setSelectedEntries([])}
         />
       </div>
     </main>

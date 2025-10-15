@@ -13,8 +13,9 @@ interface SearchResultsProps {
   error: string;
   currentPage: number;
   handleSearch: (page: number) => Promise<void>;
-  selectedEntries: number[];
-  toggleEntrySelection: (entryId: number) => void;
+  selectedEntries: string[];
+  toggleEntrySelection: (entryId: string) => void;
+  onClearSelections: () => void;
 }
 
 export function SearchResults({
@@ -25,10 +26,11 @@ export function SearchResults({
   handleSearch,
   selectedEntries,
   toggleEntrySelection,
+  onClearSelections,
 }: SearchResultsProps) {
   const handleRemoveAllSelected = () => {
     // Clear all selected entries
-    toggleEntrySelection(-1); // Using -1 as a signal to clear all selections
+    onClearSelections();
   };
   return (
     <>

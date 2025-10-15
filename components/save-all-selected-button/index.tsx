@@ -8,7 +8,7 @@ import { useDictionary } from "@/lib/context/DictionaryContext";
 import { saveMultipleWordsToDictionary } from "./api";
 
 interface SaveAllSelectedButtonProps {
-  selectedEntries: number[];
+  selectedEntries: string[];
   entries: DictionaryEntry[];
 }
 

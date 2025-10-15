@@ -13,7 +13,7 @@ export default function QuizPage() {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const entryIds = searchParams.get("entries")?.split(",").map(Number) || [];
+    const entryIds = searchParams.get("entries")?.split(",") || [];
     const fetchEntries = async () => {
       if (entryIds.length === 0) {
         setError("No entries selected for the quiz.");
@@ -53,7 +53,7 @@ export default function QuizPage() {
         // Convert to DictionaryEntry format
         const formattedEntries = data.map((entry) => ({
           id: entry.id,
-          entry_id: parseInt(entry.id.replace(/-/g, ""), 16) % 100000, // Generate a numeric ID from UUID
+          entry_id: entry.entry_id,
           simplified: entry.simplified,
           traditional: entry.traditional || entry.simplified,
           pinyin: entry.pinyin || "",

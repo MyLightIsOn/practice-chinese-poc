@@ -4,7 +4,7 @@ import { BookOpen } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface CreateQuickQuizButtonProps {
-  selectedEntries: number[];
+  selectedEntries: string[];
 }
 
 export function Index({ selectedEntries }: CreateQuickQuizButtonProps) {

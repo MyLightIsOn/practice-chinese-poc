@@ -3,7 +3,7 @@
 import { Trash2 } from "lucide-react";
 
 interface RemoveAllSelectedButtonProps {
-  selectedEntries: number[];
+  selectedEntries: string[];
   onRemoveAll: () => void;
   isLoading?: boolean;
 }

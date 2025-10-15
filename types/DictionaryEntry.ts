@@ -3,7 +3,7 @@ import { Transcriptions } from "./Transcriptions";
 
 export interface DictionaryEntry {
   id: string;
-  entry_id: number;
+  entry_id: string;
   simplified: string;
   traditional: string;
   pinyin: string;
